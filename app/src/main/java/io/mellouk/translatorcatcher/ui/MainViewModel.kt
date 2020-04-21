@@ -36,14 +36,14 @@ class MainViewModel @Inject constructor(
         addObservable(
             source = getWordsUseCase.buildObservable(),
             onNext = { dataState ->
-                if (dataState == GetWordsDataState.Successful) {
+                liveData.value = if (dataState == GetWordsDataState.Successful) {
                     prepareNextRound()
                 } else {
                     viewStateMapper.map(dataState)
                 }
             },
             onError = { throwable ->
-                viewStateMapper.map(throwable)
+                liveData.value = viewStateMapper.map(throwable)
             }
         )
 
@@ -54,10 +54,10 @@ class MainViewModel @Inject constructor(
         addObservable(
             source = prepareNextRoundUseCase.buildObservable(),
             onNext = { dataState ->
-                viewStateMapper.map(dataState)
+                liveData.value = viewStateMapper.map(dataState)
             },
             onError = { throwable ->
-                viewStateMapper.map(throwable)
+                liveData.value = viewStateMapper.map(throwable)
             }
         )
 
