@@ -1,6 +1,6 @@
 package io.mellouk.translatorcatcher.domain.model
 
-class Word(
+data class Word(
     val id: String,
     val spanish: String,
     val english: String

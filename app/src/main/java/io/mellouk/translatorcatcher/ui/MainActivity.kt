@@ -17,9 +17,11 @@ class MainActivity : BaseActivity<ViewState, MainViewModel>(
 
     override fun renderViewState(state: ViewState) {
         when (state) {
-            Initial -> prepareView()
-            ViewIsReady -> showView()
-            Pending -> renderDefaultViewState()
+            is Initial -> prepareView()
+            is RoundIsReady -> showView()
+            is Pending -> renderDefaultViewState()
+            is Loading -> renderDefaultViewState()
+            is Error -> renderDefaultViewState()
         }.exhaustive
     }
 

@@ -39,9 +39,22 @@ android {
             buildConfigField 'String', 'BASE_URL', '"https://gist.githubusercontent.com"'
         }
 
+        mock {
+            dimension "enviroment"
+            buildConfigField 'String', 'BASE_URL', '"https://gist.githubusercontent.com"'
+        }
+
         prod {
             dimension "enviroment"
             buildConfigField 'String', 'BASE_URL', '"https://gist.githubusercontent.com"'
+        }
+    }
+
+    variantFilter { variant ->
+        def name = variant.getFlavors().get(0).name
+        if (variant.buildType.name == 'release' &&
+                (name == 'dev' || name == 'mock')) {
+            variant.setIgnore(true)
         }
     }
 }

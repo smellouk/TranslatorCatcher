@@ -1,7 +1,9 @@
 package io.mellouk.translatorcatcher.ui
 
 import io.mellouk.translatorcatcher.base.BaseViewModel
+import io.mellouk.translatorcatcher.domain.usecase.getwords.GetWordsDataState
 import io.mellouk.translatorcatcher.domain.usecase.getwords.GetWordsUseCase
+import io.mellouk.translatorcatcher.domain.usecase.nextround.PrepareNextRoundUseCase
 import io.mellouk.translatorcatcher.ui.Command.*
 import io.mellouk.translatorcatcher.ui.ViewState.Initial
 import io.mellouk.translatorcatcher.ui.ViewState.Pending
@@ -13,8 +15,10 @@ import javax.inject.Singleton
 @Singleton
 class MainViewModel @Inject constructor(
     private val getWordsUseCase: GetWordsUseCase,
-    private val viewStateMapper: ViewStateMapper
+    private val viewStateMapper: ViewStateMapper,
+    private val prepareNextRoundUseCase: PrepareNextRoundUseCase
 ) : BaseViewModel<ViewState>(), Commandable<Command> {
+
     override fun getInitialState(): ViewState = Initial
 
     override fun onCommand(cmd: Command) {
@@ -32,7 +36,11 @@ class MainViewModel @Inject constructor(
         addObservable(
             source = getWordsUseCase.buildObservable(),
             onNext = { dataState ->
-                viewStateMapper.map(dataState)
+                if (dataState == GetWordsDataState.Successful) {
+                    prepareNextRound()
+                } else {
+                    viewStateMapper.map(dataState)
+                }
             },
             onError = { throwable ->
                 viewStateMapper.map(throwable)
@@ -43,8 +51,16 @@ class MainViewModel @Inject constructor(
     }
 
     private fun prepareNextRound(): Pending {
+        addObservable(
+            source = prepareNextRoundUseCase.buildObservable(),
+            onNext = { dataState ->
+                viewStateMapper.map(dataState)
+            },
+            onError = { throwable ->
+                viewStateMapper.map(throwable)
+            }
+        )
 
         return Pending
     }
-
 }
