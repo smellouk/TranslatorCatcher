@@ -1,6 +1,7 @@
 package io.mellouk.translatorcatcher.ui
 
 import io.mellouk.translatorcatcher.base.BaseViewModel
+import io.mellouk.translatorcatcher.domain.usecase.getwords.GetWordsUseCase
 import io.mellouk.translatorcatcher.ui.Command.*
 import io.mellouk.translatorcatcher.ui.ViewState.Initial
 import io.mellouk.translatorcatcher.ui.ViewState.Pending
@@ -10,7 +11,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MainViewModel @Inject constructor() : BaseViewModel<ViewState>(), Commandable<Command> {
+class MainViewModel @Inject constructor(
+    private val getWordsUseCase: GetWordsUseCase,
+    private val viewStateMapper: ViewStateMapper
+) : BaseViewModel<ViewState>(), Commandable<Command> {
     override fun getInitialState(): ViewState = Initial
 
     override fun onCommand(cmd: Command) {
@@ -25,6 +29,15 @@ class MainViewModel @Inject constructor() : BaseViewModel<ViewState>(), Commanda
     }.exhaustive
 
     private fun getWords(): Pending {
+        addObservable(
+            source = getWordsUseCase.buildObservable(),
+            onNext = { dataState ->
+                viewStateMapper.map(dataState)
+            },
+            onError = { throwable ->
+                viewStateMapper.map(throwable)
+            }
+        )
 
         return Pending
     }
