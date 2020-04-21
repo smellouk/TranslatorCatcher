@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion Config.compileSdkVersion
+    buildToolsVersion Config.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility Config.javaVersion
+        targetCompatibility Config.javaVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = Config.javaVersion
+    }
+
+    defaultConfig {
+        applicationId Config.appId
+        minSdkVersion Config.mindSdkVersion
+        targetSdkVersion Config.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions("enviroment")
+    productFlavors {
+        dev {
+            dimension "enviroment"
+            buildConfigField 'String', 'BASE_URL', '"https://gist.githubusercontent.com"'
+        }
+
+        prod {
+            dimension "enviroment"
+            buildConfigField 'String', 'BASE_URL', '"https://gist.githubusercontent.com"'
+        }
+    }
+}
+
+dependencies {
+    testImplementation Libs.junit_junit
+    androidTestImplementation Libs.androidx_test_ext_junit
+    androidTestImplementation Libs.espresso_core
+
+    implementation Libs.kotlin_stdlib_jdk7
+    implementation Libs.appcompat
+    implementation Libs.core_ktx
+    implementation Libs.constraintlayout
+
+    implementation Libs.dagger
+    kapt Libs.dagger_compiler
+
+    implementation Libs.rxjava
+    implementation Libs.rxandroid
+
+    implementation Libs.retrofit
+    implementation Libs.converter_gson
+    implementation Libs.adapter_rxjava2
+    implementation Libs.logging_interceptor
+    debugImplementation Libs.chucker_debug
+    releaseImplementation Libs.chucker_release
+
+}
