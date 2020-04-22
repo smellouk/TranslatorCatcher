@@ -61,8 +61,10 @@ android {
 
 dependencies {
     testImplementation Libs.junit_junit
+    testImplementation Libs.mockk
     androidTestImplementation Libs.androidx_test_ext_junit
     androidTestImplementation Libs.espresso_core
+    testImplementation Libs.core_testing
 
     implementation Libs.kotlin_stdlib_jdk7
     implementation Libs.appcompat

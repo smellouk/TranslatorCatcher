@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_margin">8dp</dimen>
+    <dimen name="error_text_size">18sp</dimen>
+    <dimen name="score_text_size">18sp</dimen>
+    <dimen name="language_text_size">12sp</dimen>
+    <dimen name="falling_word_text_size">26sp</dimen>
+    <dimen name="static_word_text_size">26sp</dimen>
+    <dimen name="btn_width_size">100dp</dimen>
+    <dimen name="btn_height_size">70dp</dimen>
+    <dimen name="btn_text_size">26sp</dimen>
+</resources>

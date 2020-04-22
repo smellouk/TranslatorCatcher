@@ -2,6 +2,7 @@ package io.mellouk.translatorcatcher.ui
 
 import io.mellouk.translatorcatcher.domain.BaseDataState
 import io.mellouk.translatorcatcher.domain.usecase.getwords.GetWordsDataState
+import io.mellouk.translatorcatcher.domain.usecase.matchwords.MatchWordsDataState
 import io.mellouk.translatorcatcher.domain.usecase.nextround.PrepareDataState
 import io.mellouk.translatorcatcher.ui.ViewState.Error
 import io.mellouk.translatorcatcher.ui.ViewState.Pending
@@ -14,6 +15,8 @@ class ViewStateMapper @Inject constructor() {
     fun map(dataState: BaseDataState): ViewState = when (dataState) {
         is GetWordsDataState.Fail -> map(dataState.throwable)
         is PrepareDataState.Successful -> ViewState.RoundIsReady(dataState.round)
+        is MatchWordsDataState.Successful -> ViewState.CorrectAnswer
+        is MatchWordsDataState.Fail -> ViewState.WrongAnswer
         else -> Pending
     }.exhaustive
 

@@ -4,8 +4,6 @@ package io.mellouk.translatorcatcher.base
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import io.mellouk.translatorcatcher.App
-import io.mellouk.translatorcatcher.di.AppComponent
 import javax.inject.Inject
 
 abstract class BaseActivity<State : BaseViewState, ViewModel : BaseViewModel<State>>(layout: Int) :
@@ -14,14 +12,10 @@ abstract class BaseActivity<State : BaseViewState, ViewModel : BaseViewModel<Sta
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    lateinit var appComponent: AppComponent
-
     lateinit var viewModel: ViewModel
 
     override fun onStart() {
         super.onStart()
-        val app = application as App
-        appComponent = app.getComponent()
 
         inject()
 

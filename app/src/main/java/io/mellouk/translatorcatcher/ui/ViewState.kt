@@ -9,6 +9,6 @@ sealed class ViewState : BaseViewState {
     object Pending : ViewState()
     object Loading : ViewState()
     object WrongAnswer : ViewState()
-    class CorrectAnswer(val score: Int) : ViewState()
+    object CorrectAnswer : ViewState()
     class Error(val message: String?) : ViewState()
 }

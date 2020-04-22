@@ -146,4 +146,14 @@ object Libs {
      * https://developer.android.com/studio
      */
     const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
+
+    /**
+     * http://mockk.io
+     */
+    const val mockk: String = "io.mockk:mockk:" + Versions.mockk
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val core_testing: String = "androidx.arch.core:core-testing:" + Versions.core_testing
 }

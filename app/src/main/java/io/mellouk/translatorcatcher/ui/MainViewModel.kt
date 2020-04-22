@@ -3,20 +3,20 @@ package io.mellouk.translatorcatcher.ui
 import io.mellouk.translatorcatcher.base.BaseViewModel
 import io.mellouk.translatorcatcher.domain.usecase.getwords.GetWordsDataState
 import io.mellouk.translatorcatcher.domain.usecase.getwords.GetWordsUseCase
+import io.mellouk.translatorcatcher.domain.usecase.matchwords.MatchWordsParams
+import io.mellouk.translatorcatcher.domain.usecase.matchwords.MatchWordsUseCase
 import io.mellouk.translatorcatcher.domain.usecase.nextround.PrepareNextRoundUseCase
 import io.mellouk.translatorcatcher.ui.Command.*
-import io.mellouk.translatorcatcher.ui.ViewState.Initial
-import io.mellouk.translatorcatcher.ui.ViewState.Pending
+import io.mellouk.translatorcatcher.ui.ViewState.*
 import io.mellouk.translatorcatcher.utils.Commandable
 import io.mellouk.translatorcatcher.utils.exhaustive
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class MainViewModel @Inject constructor(
     private val getWordsUseCase: GetWordsUseCase,
     private val viewStateMapper: ViewStateMapper,
-    private val prepareNextRoundUseCase: PrepareNextRoundUseCase
+    private val prepareNextRoundUseCase: PrepareNextRoundUseCase,
+    private val matchWordsUseCase: MatchWordsUseCase
 ) : BaseViewModel<ViewState>(), Commandable<Command> {
 
     override fun getInitialState(): ViewState = Initial
@@ -28,11 +28,10 @@ class MainViewModel @Inject constructor(
     private fun commandHandler(cmd: Command): ViewState = when (cmd) {
         is GetWords -> getWords()
         is NextRound -> prepareNextRound()
-        is MatchWord -> TODO()
-        is CalculateScore -> TODO()
+        is MatchWords -> startMatchingWords(cmd.params)
     }.exhaustive
 
-    private fun getWords(): Pending {
+    private fun getWords(): Loading {
         addObservable(
             source = getWordsUseCase.buildObservable(),
             onNext = { dataState ->
@@ -47,7 +46,7 @@ class MainViewModel @Inject constructor(
             }
         )
 
-        return Pending
+        return Loading
     }
 
     private fun prepareNextRound(): Pending {
@@ -61,6 +60,19 @@ class MainViewModel @Inject constructor(
             }
         )
 
+        return Pending
+    }
+
+    private fun startMatchingWords(params: MatchWordsParams): Pending {
+        addObservable(
+            source = matchWordsUseCase.buildObservable(params),
+            onNext = { dataState ->
+                liveData.value = viewStateMapper.map(dataState)
+            },
+            onError = { throwable ->
+                liveData.value = viewStateMapper.map(throwable)
+            }
+        )
         return Pending
     }
 }
